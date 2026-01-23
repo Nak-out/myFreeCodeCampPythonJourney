@@ -25,21 +25,6 @@ freeCodeCamp is a free, open-source platform for learning web development and pr
 
 This repository will be organized to reflect the various topics and certifications covered during the learning journey.
 
-## Getting Started
-
-To explore the code:
-1. Clone this repository
-2. Navigate through the folders organized by topic or certification
-3. Each script can typically be run with: `python <filename>.py`
-
-## Certifications
-
-This repository includes code from various freeCodeCamp Python certifications, such as:
-- Scientific Computing with Python
-- Data Analysis with Python
-- Machine Learning with Python
-- And other Python-related certifications
-
 ## License
 
 This is a personal learning repository. Code examples are based on freeCodeCamp curriculum materials.
