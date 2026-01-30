@@ -16,7 +16,8 @@ class Category:
         return sum([item['amount'] for item in self.ledger])
     
     def transfer(self, amount, destination):
-        if self.withraw(amount=amount, description=f'Transfer to {destination.name}'):
+        if self.check_founds(amount=amount):
+            self.withraw(amount=amount, description=f'Transfer to {destination.name}')
             destination.deposit(amount=amount, description=f'Transfer from {self.name}')
             return True
         return False
@@ -43,15 +44,26 @@ class Category:
 def create_spend_chart(categories: list):
     title = 'Percentage spent by category'
     spendings = {}
+
     for categorie in categories:
         spendings[categorie.name] = 0
         for ledg in categorie.ledger:
             if ledg['amount'] < 0:
                 spendings[categorie.name] += -ledg['amount']
-    total_spending = sum([money for money in spendings.values()])
-    return spendings.items()
 
+    total_spending = sum(spendings.values())
+    for key in spendings.keys():
+        val = int(spendings[key] / total_spending)
+        spendings.update([(key, val)])
+ 
+    chart = title + '\n'
 
+    for i in range(100, -1, -10):
+        chart += f"{i}| "
+        for key, value in spendings.items():
+            if value >= i:
+                chart += '0 '
+    return 
 
 c1 = Category('madjid')
 c2 = Category('yahia')
@@ -60,9 +72,7 @@ c1.withraw(500, 'withraw')
 c1.transfer(300, c2)
 c1.withraw(300, 'rani tchumert lzmlu drahem tout de suite')
 
-c2 = Category('yahia')
 c2.deposit(2000, 'deposit')
 c2.withraw(700, 'withraw')
-c2.transfer(300, c2)
 c2.withraw(300, 'rani tchumert lzmlu drahem tout de suite')
 print(create_spend_chart([c1,c2]))
