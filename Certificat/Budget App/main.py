@@ -7,7 +7,7 @@ class Category:
         self.ledger.append({'amount': amount, 'description': description})
     
     def withraw(self, amount, description=''):
-        if self.check_founds:
+        if self.check_founds(amount=amount):
             self.ledger.append({'amount': -amount, 'description': description})
             return True
         return False
@@ -24,16 +24,45 @@ class Category:
     def check_founds(self, amount):
         if amount > self.get_balance():
             return False
-        True
+        return True
         
     def __str__(self):
         x = (30 - len(self.name)) // 2
-        string =  '*'*x + self.name.capitalize() + '*'*x
-        for dico in self.ledger:    
-            pass
+        text =  '*'*x + self.name.capitalize() + '*'*x
+        for dico in self.ledger:
+            txt_size = 25 - len(dico['description'])
+            if txt_size > 0 :
+                text += f"\n{dico['description']}{' '*txt_size}{dico['amount']}"
+            else:
+                text += f"\n{dico['description'][:24]} {dico['amount']}"
+
+        text += f"\nTotal: {self.get_balance()}"
+        return text
 
     
-def create_spend_chart(categories):
-    pass
+def create_spend_chart(categories: list):
+    title = 'Percentage spent by category'
+    spendings = {}
+    for categorie in categories:
+        spendings[categorie.name] = 0
+        for ledg in categorie.ledger:
+            if ledg['amount'] < 0:
+                spendings[categorie.name] += -ledg['amount']
+    total_spending = sum([money for money in spendings.values()])
+    return spendings.items()
+
+
+
 c1 = Category('madjid')
-print(c1)
+c2 = Category('yahia')
+c1.deposit(1000, 'deposit')
+c1.withraw(500, 'withraw')
+c1.transfer(300, c2)
+c1.withraw(300, 'rani tchumert lzmlu drahem tout de suite')
+
+c2 = Category('yahia')
+c2.deposit(2000, 'deposit')
+c2.withraw(700, 'withraw')
+c2.transfer(300, c2)
+c2.withraw(300, 'rani tchumert lzmlu drahem tout de suite')
+print(create_spend_chart([c1,c2]))

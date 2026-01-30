@@ -1,4 +1,4 @@
-** start of main.py **
+# ----start of main.py---- 
 
 def add_setting(settings:dict, mytuple:tuple):
     key, value = mytuple
@@ -41,5 +41,5 @@ test_settings_2 = {'theme': 'light'}
 print(update_setting(test_settings_2, ('theme', 'dark')))
 print(view_settings(test_settings))
 
-** end of main.py **
+# -----end of main.py-----
 
