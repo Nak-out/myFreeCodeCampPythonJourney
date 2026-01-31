@@ -52,15 +52,15 @@ def create_spend_chart(categories: list):
                 spendings[categorie.name] += -ledg['amount']
     
     # -----debug--------
-    print(f"first print: spending -> {spendings}")
+    print(f"{'first print: spending ->':35}{spendings}")
     
     total_spending = sum(spendings.values())
     # -----debug-------
-    print(f"{'second print: total_spending -> '}", total_spending)
+    print(f"{'second print: total_spending -> ':35}{total_spending}")
     
     # ------spendings by total spending----
     for key in spendings.keys():
-        val = int(spendings[key] / total_spending)
+        val = int((spendings[key] / total_spending)*100)
         spendings.update([(key, val)])
  
     chart = title
@@ -91,5 +91,5 @@ c1.withraw(300, 'rani tchumert lzmlu drahem tout de suite')
 c2.deposit(2000, 'deposit')
 c2.withraw(700, 'withraw')
 c2.withraw(300, 'rani tchumert lzmlu drahem tout de suite')
-#print(create_spend_chart([c1,c2]))
-print(c1)
+print(create_spend_chart([c1,c2]))
+#print(c1)
