@@ -33,9 +33,9 @@ class Category:
         for dico in self.ledger:
             txt_size = 25 - len(dico['description'])
             if txt_size > 0 :
-                text += f"\n{dico['description']}{' '*txt_size}{dico['amount']}"
+                text += f"\n{dico['description']:25}{dico['amount']}"
             else:
-                text += f"\n{dico['description'][:24]} {dico['amount']}"
+                text += f"\n{dico['description']:25}{dico['amount']}"
 
         text += f"\nTotal: {self.get_balance()}"
         return text
@@ -50,20 +50,36 @@ def create_spend_chart(categories: list):
         for ledg in categorie.ledger:
             if ledg['amount'] < 0:
                 spendings[categorie.name] += -ledg['amount']
-
+    
+    # -----debug--------
+    print(f"first print: spending -> {spendings}")
+    
     total_spending = sum(spendings.values())
+    # -----debug-------
+    print(f"{'second print: total_spending -> '}", total_spending)
+    
+    # ------spendings by total spending----
     for key in spendings.keys():
         val = int(spendings[key] / total_spending)
         spendings.update([(key, val)])
  
-    chart = title + '\n'
-
+    chart = title
+    print(spendings.values())
     for i in range(100, -1, -10):
-        chart += f"{i}| "
+        chart += f"\n{i:3}| "
         for key, value in spendings.items():
             if value >= i:
                 chart += '0 '
-    return 
+                
+    chart += f"\n{'-'*(len(spendings)*2)}\n{' '*5}"
+    
+    max_len = len(max([name for name in spendings.keys()], key=len))
+    
+    for i in range(max_len):
+        pass
+        for name in spendings.keys():
+            pass
+    return chart
 
 c1 = Category('madjid')
 c2 = Category('yahia')
@@ -75,4 +91,5 @@ c1.withraw(300, 'rani tchumert lzmlu drahem tout de suite')
 c2.deposit(2000, 'deposit')
 c2.withraw(700, 'withraw')
 c2.withraw(300, 'rani tchumert lzmlu drahem tout de suite')
-print(create_spend_chart([c1,c2]))
+#print(create_spend_chart([c1,c2]))
+print(c1)
