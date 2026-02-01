@@ -23,15 +23,17 @@ class Category:
         return False
     
     def check_funds(self, amount):
-        return False if amount > self.get_balance() else True
+        return amount <= self.get_balance()
         
     def __str__(self):
         x = (30 - len(self.name)) // 2
-        text =  '*'*x + self.name.capitalize() + '*'*x + '\n'
+        text = '*'*x + self.name + '*'*x + '\n'
+        
         for dico in self.ledger:
-            description = f"{dico['description']}"
-            amount = f"{dico['amount']}"
-            text += f"{description:<23}{amount:>7.2f}\n"    
+            desc = dico['description'][:23]
+            amt = f"{dico['amount']:.2f}"[:7]
+            text += f"{desc:<23}{amt:>7}\n"
+
         text += f"Total: {self.get_balance():.2f}"
         return text
 
@@ -48,37 +50,31 @@ def create_spend_chart(categories: list):
 
     total_spending = sum(spendings.values())
 
-    # ------spendings by total spending----
+    # Calculate percentages and round DOWN to nearest 10
     for key in spendings.keys():
-        val = round((spendings[key] / total_spending)*100, -1)
-        spendings.update([(key, val)])
+        val = int((spendings[key] / total_spending) * 100 // 10 * 10)
+        spendings[key] = val
  
     chart = title
-    for i in range(100, -1, -10):
+    for i in range(100, -10, -10):
         chart += f"\n{i:3}| "
-        for key, value in spendings.items():
-            if value >= i:
-                chart += 'o '
-                
-    chart += f"\n{' '*5}{'-'*(len(spendings)*2)}{' '*5}"
-    
-    max_len = len(max([name for name in spendings.keys()], key=len))
-    
-    for i in range(max_len):
-        chart += '\n'+ ' '*5
-        for name in spendings.keys():
-            if i <= len(name) - 1:
-                chart += f"{name[i].upper()}  "
+        for key in spendings.keys():
+            if spendings[key] >= i:
+                chart += 'o  '
             else:
                 chart += '   '
+        
+    # Horizontal line: 3 dashes per category + 1 extra
+    chart += f"\n    {'-' * (len(spendings) * 3 + 1)}"
+    
+    max_len = max([len(name) for name in spendings.keys()])
+    
+    for i in range(max_len):
+        chart += '\n     '
+        for name in spendings.keys():
+            if i < len(name):
+                chart += f"{name[i]}  "
+            else:
+                chart += '   '
+    
     return chart
-
-c1 = Category('madjid')
-c1.deposit(1000, 'deposit')
-c1.withdraw(500.34, 'withdraw')
-c2 = Category('yahia')
-c1.transfer(200.50, c2)
-check = c1.check_funds(1000)
-print(c1)
-
-print(c1.check_funds(100))
