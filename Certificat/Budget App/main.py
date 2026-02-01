@@ -27,13 +27,14 @@ class Category:
         
     def __str__(self):
         x = (30 - len(self.name)) // 2
-        text =  '*'*x + self.name.capitalize() + '*'*x + '\n'
+        text = f"{self.name.title():*^30}\n"
         for dico in self.ledger:
-            description = f"{dico['description']}"
-            amount = f"{dico['amount']}"
+            description = dico['description']
+            amount = dico['amount']
             text += f"{description:<23}{amount:>7.2f}\n"    
         text += f"Total: {self.get_balance():.2f}"
         return text
+
 
     
 def create_spend_chart(categories: list):
@@ -41,26 +42,30 @@ def create_spend_chart(categories: list):
     spendings = {}
 
     for categorie in categories:
-        spendings[categorie.name] = 0
+        spendings[categorie.name.capitalize()] = 0
         for ledg in categorie.ledger:
             if ledg['amount'] < 0:
-                spendings[categorie.name] += -ledg['amount']
+                spendings[categorie.name.capitalize()] += -ledg['amount']
 
     total_spending = sum(spendings.values())
 
     # ------spendings by total spending----
     for key in spendings.keys():
+        #print(f"{key:23}: {spendings[key]}")
         val = round((spendings[key] / total_spending)*100, -1)
+        #print(f"{'val':23}: {val}")
         spendings.update([(key, val)])
- 
+    
+    print(f"{'Spendings Values':<23}{spendings.values()}\n")
+    
     chart = title
     for i in range(100, -1, -10):
         chart += f"\n{i:3}| "
         for key, value in spendings.items():
             if value >= i:
-                chart += 'o '
+                chart += 'o  '
                 
-    chart += f"\n{' '*5}{'-'*(len(spendings)*2)}{' '*5}"
+    chart += f"\n{' '*4}{'-'*(len(spendings)*3+1)}"
     
     max_len = len(max([name for name in spendings.keys()], key=len))
     
@@ -68,7 +73,7 @@ def create_spend_chart(categories: list):
         chart += '\n'+ ' '*5
         for name in spendings.keys():
             if i <= len(name) - 1:
-                chart += f"{name[i].upper()}  "
+                chart += f"{name[i]}  "
             else:
                 chart += '   '
     return chart
@@ -76,9 +81,12 @@ def create_spend_chart(categories: list):
 c1 = Category('madjid')
 c1.deposit(1000, 'deposit')
 c1.withdraw(500.34, 'withdraw')
-c2 = Category('yahia')
-c1.transfer(200.50, c2)
-check = c1.check_funds(1000)
-print(c1)
+c1.withdraw(200.82, 'second withdraw')
 
-print(c1.check_funds(100))
+c2 = Category('yahia')
+c2.deposit(2000, 'deposit')
+c2.withdraw(800.34, 'withdraw')
+c2.withdraw(600.82, 'second withdraw')
+
+print(c1)
+#print(create_spend_chart([c1, c2]))
